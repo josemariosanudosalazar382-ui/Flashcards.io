@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta de Estudio 🩺</title>
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+    <header>
+        <h1>Mis Herramientas</h1>
+        <div class="theme-switcher">
+            <button id="theme-light-btn">Claro</button>
+            <button id="theme-gray-btn">Gris Tenue</button>
+            <button id="theme-solarized-btn">Solarizado</button>
+            <button id="theme-black-btn">Negro</button>
+        </div>
+    </header>
+    
+    <main>
+        <div id="announcement-banner">
+            <p>¡Bienvenido! Consejo del día: ¡Usa el temporizador Pomodoro para mantener la concentración!</p>
+        </div>
+
+        <nav id="main-nav">
+            <button class="nav-btn active" data-target="deck-list-container">Flashcards</button>
+            <button class="nav-btn" data-target="docs-container">Notas</button>
+            <button class="nav-btn" data-target="tasks-container">Tareas</button>
+            <button class="nav-btn" data-target="pomodoro-container">Pomodoro</button>
+            <button class="nav-btn" data-target="study-log-container">Calendario</button>
+        </nav>
+
+        <section id="deck-list-container">
+            <h2>Mazos Guardados</h2>
+            <div id="deck-list"></div>
+            <div class="deck-actions">
+                <button id="add-deck-btn">Crear Nuevo Mazo</button>
+                <button id="import-deck-btn">Importar Mazo</button>
+            </div>
+            <input type="file" id="deck-file-input" accept=".json" style="display: none;">
+        </section>
+
+        <section id="flashcard-view-container" style="display: none;">
+            <h2 id="current-deck-title"></h2>
+            <div id="flashcard-area"></div>
+            <div id="controls">
+                <button id="next-btn">Siguiente</button>
+            </div>
+            <div id="rating-controls" style="display: none;">
+                <h4>¿Qué tan bien te sabías esta?</h4>
+                <div id="rating-buttons">
+                    <button data-rating="1" class="rating-btn">1 (Nada)</button><button data-rating="2" class="rating-btn">2 (Difícil)</button><button data-rating="3" class="rating-btn">3 (Más o menos)</button><button data-rating="4" class="rating-btn">4 (Bien)</button><button data-rating="5" class="rating-btn">5 (Perfecto)</button>
+                </div>
+            </div>
+            <button id="add-card-btn">Añadir Flashcard</button>
+            <button id="download-deck-btn">Descargar Mazo</button>
+            <button id="back-to-decks-btn">Volver a Mazos</button>
+        </section>
+
+        <section id="add-card-container" style="display: none;">
+            <h2 id="add-card-title">Añadir Nueva Flashcard</h2>
+            <div class="mode-toggle">
+                <button id="single-card-mode-btn" class="active">Añadir una</button>
+                <button id="bulk-import-mode-btn">Importar texto</button>
+            </div>
+            <form id="add-card-form" class="mode-content"><label for="front">Frente:</label><textarea id="front" required></textarea><label for="back">Reverso:</label><textarea id="back" required></textarea><button type="submit">Guardar</button></form>
+            <form id="bulk-import-form" class="mode-content" style="display: none;"><p>Pega tu lista de tarjetas. Formato: <code>Frente,Reverso</code></p><label for="bulk-text">Texto a importar:</label><textarea id="bulk-text" rows="10" required></textarea><button type="submit">Importar</button></form>
+            <button id="cancel-add-btn">Cancelar</button>
+        </section>
+
+        <section id="docs-container" style="display: none;">
+            <div id="docs-list-view">
+                <h2>Notas por Materia</h2>
+                <div id="docs-list"></div>
+                <div class="deck-actions">
+                    <button id="add-doc-btn">Crear Nueva Nota</button>
+                    <button id="import-doc-btn">Importar Nota</button>
+                </div>
+                <input type="file" id="doc-file-input" accept=".html" style="display: none;">
+            </div>
+            <div id="doc-editor-view" style="display: none;">
+                <h2 id="doc-editor-title">Crear/Editar Nota</h2>
+                <input type="text" id="doc-subject-input" placeholder="Materia (Ej. Patología)" required>
+                <input type="text" id="doc-title-input" placeholder="Título de la Nota" required>
+                <div id="editor-container"></div>
+                <div class="deck-actions">
+                    <button id="save-doc-btn">Guardar Nota</button>
+                    <button id="download-doc-btn">Descargar Nota</button>
+                    <button id="cancel-doc-btn">Cancelar</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tasks-container" style="display: none;">
+            <h2>Lista de Tareas</h2>
+            <form id="add-task-form"><input type="text" id="task-input" placeholder="Añadir nueva tarea..." required><button type="submit">Añadir</button></form>
+            <ul id="task-list"></ul>
+        </section>
+
+        <section id="pomodoro-container" style="display: none;">
+            <h2>Temporizador Pomodoro</h2>
+            <div id="pomodoro-timer" class="pomodoro-study">25:00</div>
+            <div id="pomodoro-controls">
+                <button id="pomodoro-start-btn">Iniciar</button>
+                <button id="pomodoro-pause-btn">Pausar</button>
+                <button id="pomodoro-reset-btn">Reiniciar</button>
+            </div>
+            <div id="pomodoro-settings">
+                <h3>Configuración</h3>
+                <div>
+                    <label for="pomodoro-study-time">Tiempo de Estudio (min):</label>
+                    <input type="number" id="pomodoro-study-time" value="25" min="1">
+                </div>
+                <div>
+                    <label for="pomodoro-break-time">Tiempo de Descanso (min):</label>
+                    <input type="number" id="pomodoro-break-time" value="5" min="1">
+                </div>
+            </div>
+        </section>
+
+        <section id="study-log-container" style="display: none;">
+            <h2>Registro de Actividades</h2>
+            <div id="log-header"><button id="prev-month-btn">←</button><h2 id="current-month-display"></h2><button id="next-month-btn">→</button></div>
+            <div id="calendar-grid"></div>
+            <div id="calendar-legend">
+                <h3>Tipos de Evento</h3>
+                <div id="event-types-list"></div>
+                <form id="add-event-type-form">
+                    <input type="text" id="event-type-name" placeholder="Nombre del evento" required>
+                    <input type="color" id="event-type-color" value="#3498db">
+                    <button type="submit">Añadir Evento</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <div id="ad-container">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="YYYYYYYYYY" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    
+    <button id="help-btn">?</button>
+
+    <div id="help-modal" class="modal"><div class="modal-content"><span class="close-btn">&times;</span><h2>Guía Rápida</h2><div class="modal-section"><h3>Exportar Mazo</h3><ol><li>Haz clic sobre el mazo que quieres guardar.</li><li>Presiona <strong>"Descargar Mazo"</strong>.</li><li>Se guardará un archivo <code>.json</code> en tu computadora.</li></ol></div><div class="modal-section"><h3>Importar Mazo</h3><ol><li>En la pantalla de Flashcards, haz clic en <strong>"Importar Mazo"</strong>.</li><li>Selecciona el archivo <code>.json</code> que habías guardado.</li><li>El mazo aparecerá en tu lista.</li></ol></div><div class="modal-section"><h3>Crear Flashcards con IA</h3><ol><li>Pídele a una IA: <code>Genera 10 flashcards sobre suturas. Formato: Nombre,Descripción.</code></li><li>Copia la lista.</li><li>Entra a un mazo, ve a <strong>"Añadir Flashcard"</strong> -> <strong>"Importar texto"</strong>.</li><li>Pega la lista y haz clic en importar.</li></ol></div><div class="modal-section"><h3>Ejemplo Visual</h3><p>Al estudiar, haz clic en la tarjeta para voltearla.</p><div class="flashcard-container-example"><div class="flashcard-face-example front">Fémur</div><div class="flashcard-face-example back">Hueso del muslo, el más largo del cuerpo.</div></div></div></div></div>
+    
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
